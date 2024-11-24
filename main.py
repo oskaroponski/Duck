@@ -49,20 +49,6 @@ BANNER = YELLOW + f"""
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠛⠛⠻⠧⠶⠾⠛⠁
 """ + RESET
 
-def update():
-    try:
-        result = subprocess.run(
-            ["git", "clone", "https://github.com/oskaroponski/Duck.git"],
-            check=True,
-            text=True,
-            capture_output=True
-        )
-        print(result.stdout)
-    except subprocess.CalledProcessError as e:
-        print(f"{RED}[ERROR] {e.stderr}")
-    except Exception as e:
-        print(f"{RED}[ERROR] {str(e)}")
-
 def send_packets(ip, port):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -83,7 +69,7 @@ except Exception as e:
     exit(f"{RED}[ERROR] {e}{RESET}")
 
 if choice == -1:
-    update()
+    import updater
 
 if choice == 0:
     exit()
