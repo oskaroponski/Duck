@@ -1,16 +1,8 @@
-#########################
-# PROJECT: DUCK         #
-# AUTHOR: OSKAR OPOŃSKI #
-#########################
-# THIS IS A DDOS TOOL.  #
-# THE AUTHOR DOES NOT   #
-# BEAR THE CONSEQUENCES #
-# FOR ANY DAMAGE!       #
-#########################
-
 import socket
 import threading
-import subprocess
+import os
+import requests
+import sys
 
 try:
     from colorama import Fore, Style
@@ -29,7 +21,7 @@ BANNER = YELLOW + f"""
 ⠀⠀⠀⠀⢀⣾⠛⠁⢰⣧⡈⢻⣦
 ⠀⠀⠀⠀⢸⣇⣼⡀⠻⠟⠁⠀⢻⡆          {PURPLE}PROJECT: DUCK{YELLOW}
 ⠀⠀⠀⢀⡞⣹⠙⣧⡀⠀⠀⡀⢸⡇          {PURPLE}AUTHOR: Oskar Opoński | https://github.com/oskaroponski{YELLOW}
-⠀⣀⡴⠋⠀⣀⣴⣿⡷⠴⠞⠁⢸⡇          {RED}THIS IS DDOS TOOL. THE AUTHOR DOES NOT BEAR THE CONSEQUENCES FOR ANY DAMAGE!{YELLOW}
+⠀⣀⡴⠋⠀⣀⣴⣿⡷⠴⠞⠁⢸⡇          {RED}THE AUTHOR DOES NOT BEAR THE CONSEQUENCES FOR ANY DAMAGE!{YELLOW}
 ⢾⣁⣀⡤⠾⠛⠁⣸⠀⠀⠀⠀⢸⡇
 ⠈⠁⠀⠀⠀⠀⢠⡟⠀⠀⠀⠀⣾⠃
 ⠀⠀⠀⠀⠀⣠⣿⠁⠀⠀⠀⢀⣿
@@ -48,6 +40,29 @@ BANNER = YELLOW + f"""
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠈⠉⠙⠛⢋⣿⣙⣶⣾⡿⢷⡿
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠛⠛⠻⠧⠶⠾⠛⠁
 """ + RESET
+
+def update():
+    # GitHub URL for the updated __main__.py file
+    url = "https://raw.githubusercontent.com/oskaroponski/Duck/main/__main__.py"
+    local_file = "__main__.py"
+
+    try:
+        # Download the latest version of __main__.py
+        response = requests.get(url)
+        response.raise_for_status()  # Will raise an exception for bad status codes
+
+        # Write the updated content to the local file
+        with open(local_file, "wb") as f:
+            f.write(response.content)
+
+        print("[SUCCESS] Script updated successfully.")
+        
+        # Optionally, restart the script (if desired)
+        print("[INFO] Restarting the script...")
+        os.execv(sys.executable, ['python'] + sys.argv)  # This restarts the script
+
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] Failed to update the script: {e}")
 
 def send_packets(ip, port):
     try:
@@ -69,7 +84,7 @@ except Exception as e:
     exit(f"{RED}[ERROR] {e}{RESET}")
 
 if choice == -1:
-    import updater
+    update()
 
 if choice == 0:
     exit()
