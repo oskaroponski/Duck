@@ -59,8 +59,8 @@ def update():
         print("[SUCCESS] Script updated successfully.")
         
         # Optionally, restart the script (if desired)
-        print("[INFO] Restarting the script in 2.5s...")
-        time.sleep(2.5)
+        print("[INFO] Restarting the script in 5s...")
+        time.sleep(5)
         os.execv(sys.executable, ['python'] + sys.argv)  # This restarts the script
 
     except requests.exceptions.RequestException as e:
