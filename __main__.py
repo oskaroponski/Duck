@@ -3,6 +3,7 @@ import threading
 import os
 import requests
 import sys
+import time
 
 try:
     from colorama import Fore, Style
@@ -58,7 +59,8 @@ def update():
         print("[SUCCESS] Script updated successfully.")
         
         # Optionally, restart the script (if desired)
-        print("[INFO] Restarting the script...")
+        print("[INFO] Restarting the script in 2.5s...")
+        time.sleep(2.5)
         os.execv(sys.executable, ['python'] + sys.argv)  # This restarts the script
 
     except requests.exceptions.RequestException as e:
